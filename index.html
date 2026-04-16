@@ -127,8 +127,8 @@ var SECTIONS = [
           { name:"薏仁 Barley", std:"平日 < 2，周末 < 3" },
           { name:"地瓜", std:"平日 < 2，周末 < 3" },
           { name:"Sago", std:"开早 < 0.5，早班 < 1" },
-          { name:"CMJ", std:"< 0.5" },
-          { name:"TM", std:"< 0.5" },
+          { name:"CMJ 椰芒汁", std:"< 0.5" },
+          { name:"TM 芋奶", std:"< 0.5" },
           { name:"椰奶", std:"< 1.5，补到 1.5 以上" },
           { name:"Matcha", std:"< 0.5" },
           { name:"Sesame", std:"< 0.5" }
@@ -137,22 +137,22 @@ var SECTIONS = [
       {
         name: "中间冰箱",
         items: [
-          { name:"EWS", std:"< 0.5（一份偏少）" },
-          { name:"WS", std:"< 0.5" },
+          { name:"EWS Egg Waffle Sauce", std:"< 0.5，一份偏少" },
+          { name:"WS Waffle Sauce", std:"< 0.5" },
           { name:"WC 奶霜", std:"< 0，需补" },
-          { name:"MTJ", std:"< 0，需补" },
-          { name:"SJ", std:"< 0，需补" },
+          { name:"MTJ 奶茶冻", std:"< 0，需补" },
+          { name:"SJ 草莓酱", std:"< 0，需补" },
           { name:"BSS", std:"< 0，需补" },
           { name:"CM", std:"空 + 1" },
           { name:"TB", std:"空 + 1" },
-          { name:"PPP", std:"空 + 1" },
+          { name:"PPP 紫薯泥", std:"空 + 1" },
           { name:"Mango", std:"空 + 1" },
           { name:"Strawberry", std:"空 + 1" },
           { name:"PS", std:"< 0，需补" },
           { name:"Avocado", std:"< 0，需补" },
           { name:"MT 奶茶", std:"补到 1.5 以上（可能为负）" },
           { name:"GT 绿茶", std:"< 1（有可能多）" },
-          { name:"GMT 绿奶茶", std:"< 1" },
+          { name:"GMT 绿奶茶 Taro Milk", std:"< 1" },
           { name:"BT 红茶", std:"< 0，需补" },
           { name:"TTS", std:"< 0，周末补到刻度线" },
           { name:"RBS 红豆酱", std:"< 刻度线，开早备" },
@@ -168,7 +168,7 @@ var SECTIONS = [
         items: [
           { name:"焦糖布丁", std:"< 2盘，当天 < 0 需补" },
           { name:"杏仁布丁", std:"< 0，需补" },
-          { name:"WS", std:"< 0.1" },
+          { name:"WS 白蜜糖", std:"< 0.1" },
           { name:"Taro 芋头", std:"< 0，需补" },
           { name:"PSP 紫薯", std:"< 2/3" },
           { name:"GJ 仙草冻", std:"周中 < 2，周末 < 3" },
@@ -193,7 +193,8 @@ var SECTIONS = [
     id: "syrup", label: "糖水",
     items: [
       { name:"芋圆糖水", sub:"TBS", badge:"2天", rows:[["热水","3500 ml"],["糖","二砂糖 500 g + 白糖 500 g"],["做法","混合煮沸"]] },
-      { name:"冰糖水", sub:"CS", badge:"2天", rows:[["炼糖","10 勺（约 2500 ml）"],["水","8000 ml"],["做法","混合均匀"]] }
+      { name:"冰糖水", sub:"CS", badge:"2天", rows:[["炼糖","10 勺（约 2500 ml）"],["水","8000 ml"],["做法","混合均匀"]] },
+      { name:"白蜜糖", sub:"White Sugar Syrup / WS", badge:"2天", rows:[["热水","2000 ml"],["白糖","2750 g"],["做法","混合煮沸"],["用途","西米露（Sago）存放用"]] }
     ]
   },
   {
@@ -220,7 +221,7 @@ var SECTIONS = [
       { name:"小芋圆", sub:"Mini Taro", badge:"及时", badgeClass:"badge-red", rows:[["热水","5000 ml，大火煮至膨胀飘起"],["过水","过冷水"],["存放","放入 CS"]] },
       { name:"珍珠", sub:"Tapioca Pearl", badge:"及时", badgeClass:"badge-red", rows:[["热水","8000 ml，滚开后煮 25 分钟，焖 20 分钟，冲冷水"],["存放","白糖:二砂:珍珠 = 1:1:10，热水化开糖"]] },
       { name:"白汤圆", sub:"White Glutinous", badge:"及时", badgeClass:"badge-red", rows:[["热水","5000 ml，煮至飘起"],["存放","放入 TBS"]] },
-      { name:"西米露", sub:"Sago", badge:"及时", badgeClass:"badge-red", rows:[["材料","水 5000 ml + 西米 2 cup"],["做法","水滚开煮 15 分钟，焖 15 分钟，过冷水"],["存放","导入 WS"]] }
+      { name:"西米露", sub:"Sago", badge:"及时", badgeClass:"badge-red", rows:[["材料","水 5000 ml + 西米 2 cup"],["做法","水滚开煮 15 分钟，焖 15 分钟，过冷水"],["存放","导入白蜜糖（WS）"]] }
     ],
     note: "⚠️ 以上配料均即做即用，不可久放。"
   },
