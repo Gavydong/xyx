@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>甜品店备品操作手册</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: #f5f5f3; color: #1a1a1a; min-height: 100vh; }
+header { background: #fff; border-bottom: 0.5px solid #e0e0d8; padding: 1.25rem 1.5rem; display: flex; align-items: center; gap: 12px; }
+header h1 { font-size: 20px; font-weight: 500; color: #1a1a1a; }
+header p { font-size: 13px; color: #888; margin-top: 2px; }
+.logo { width: 36px; height: 36px; border-radius: 10px; background: #1D9E75; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 18px; flex-shrink: 0; }
+.container { max-width: 900px; margin: 0 auto; padding: 1.5rem 1rem; }
+.nav { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 1.5rem; }
+.nav-btn { padding: 7px 16px; border-radius: 20px; border: 0.5px solid #ccc; background: #fff; color: #555; font-size: 13px; cursor: pointer; transition: all 0.15s; font-family: inherit; }
+.nav-btn:hover { background: #f0f0ee; color: #1a1a1a; }
+.nav-btn.active { background: #1D9E75; border-color: #1D9E75; color: #fff; font-weight: 500; }
+.section { display: none; }
+.section.active { display: block; }
+.section-title { font-size: 17px; font-weight: 500; color: #1a1a1a; margin-bottom: 1rem; padding-bottom: 8px; border-bottom: 0.5px solid #e0e0d8; }
+.item-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; }
+.item-card { background: #fff; border: 0.5px solid #e0e0d8; border-radius: 12px; overflow: hidden; cursor: pointer; transition: border-color 0.15s; }
+.item-card:hover { border-color: #bbb; }
+.item-card.expanded { border-color: #1D9E75; }
+.card-header { padding: 12px 14px; display: flex; justify-content: space-between; align-items: center; }
+.card-name { font-size: 15px; font-weight: 500; color: #1a1a1a; }
+.card-sub { font-size: 12px; color: #888; margin-top: 2px; }
+.card-badge { font-size: 11px; padding: 3px 8px; border-radius: 12px; white-space: nowrap; background: #E1F5EE; color: #0F6E56; flex-shrink: 0; }
+.badge-red { background: #FAECE7; color: #993C1D; }
+.badge-blue { background: #E6F1FB; color: #185FA5; }
+.card-body { display: none; border-top: 0.5px solid #e0e0d8; }
+.item-card.expanded .card-body { display: block; }
+.card-chevron { font-size: 11px; color: #aaa; margin-left: 8px; transition: transform 0.15s; display: inline-block; }
+.item-card.expanded .card-chevron { transform: rotate(180deg); }
+table.info { width: 100%; border-collapse: collapse; font-size: 13px; }
+table.info tr:not(:last-child) td { border-bottom: 0.5px solid #f0f0ee; }
+table.info td { padding: 7px 14px; vertical-align: top; line-height: 1.5; }
+table.info td:first-child { color: #888; width: 72px; white-space: nowrap; }
+table.info td:last-child { color: #1a1a1a; }
+.note { font-size: 12px; color: #555; margin-top: 1rem; padding: 8px 12px; background: #f5fdf9; border-radius: 8px; border-left: 3px solid #1D9E75; }
+.progress-text { font-size: 12px; color: #888; margin-bottom: 1rem; }
+.step-list { display: flex; flex-direction: column; gap: 8px; }
+.step-item { background: #fff; border: 0.5px solid #e0e0d8; border-radius: 10px; overflow: hidden; }
+.step-item.warn { border-color: #D85A30; }
+.step-item.done { opacity: 0.55; }
+.step-item.done .step-title { text-decoration: line-through; color: #aaa; }
+.step-item.done .step-num { background: #1D9E75; color: #fff; }
+.step-item.done .check-btn { background: #1D9E75; border-color: #1D9E75; color: #fff; }
+.step-row { display: flex; align-items: center; gap: 12px; padding: 12px 14px; cursor: pointer; user-select: none; }
+.step-num { width: 28px; height: 28px; border-radius: 50%; background: #E1F5EE; color: #0F6E56; font-size: 13px; font-weight: 500; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.step-item.warn .step-num { background: #FAECE7; color: #993C1D; }
+.step-title { font-size: 14px; font-weight: 500; color: #1a1a1a; flex: 1; }
+.step-chevron { font-size: 11px; color: #aaa; transition: transform 0.15s; flex-shrink: 0; }
+.step-item.open .step-chevron { transform: rotate(180deg); }
+.step-detail { display: none; padding: 8px 14px 12px 54px; font-size: 13px; color: #555; line-height: 1.7; border-top: 0.5px solid #f0f0ee; }
+.step-item.open .step-detail { display: block; }
+.warn-text { color: #993C1D; font-weight: 500; }
+.check-btn { width: 22px; height: 22px; border-radius: 50%; border: 1.5px solid #ccc; background: #fff; cursor: pointer; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 12px; color: transparent; transition: all 0.15s; padding: 0; font-family: inherit; }
+.reset-btn { margin-top: 1rem; padding: 8px 16px; border-radius: 20px; border: 0.5px solid #ccc; background: #fff; color: #888; font-size: 12px; cursor: pointer; font-family: inherit; }
+.fridge-block { margin-bottom: 1.5rem; }
+.fridge-title { font-size: 14px; font-weight: 500; color: #0F6E56; margin-bottom: 8px; padding: 8px 12px; background: #E1F5EE; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; }
+.fridge-count { font-size: 12px; font-weight: 400; }
+.inv-item { display: flex; align-items: center; gap: 12px; padding: 10px 12px; background: #fff; border: 0.5px solid #e0e0d8; border-radius: 8px; margin-bottom: 6px; cursor: pointer; user-select: none; transition: all 0.15s; }
+.inv-item:hover { border-color: #bbb; }
+.inv-item.checked { background: #FAECE7; border-color: #D85A30; }
+.inv-item.checked .inv-name { color: #993C1D; font-weight: 500; }
+.inv-item.checked .inv-check { background: #D85A30; border-color: #D85A30; color: #fff; }
+.inv-check { width: 22px; height: 22px; border-radius: 50%; border: 1.5px solid #ccc; background: #fff; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 12px; color: transparent; transition: all 0.15s; }
+.inv-name { font-size: 14px; font-weight: 500; color: #1a1a1a; min-width: 110px; }
+.inv-std { font-size: 12px; color: #888; flex: 1; }
+.btn-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 1rem; }
+.inv-done-btn { padding: 9px 18px; border-radius: 20px; border: 0.5px solid #1D9E75; background: #E1F5EE; color: #0F6E56; font-size: 13px; cursor: pointer; font-family: inherit; font-weight: 500; }
+.inv-reset-btn { padding: 9px 18px; border-radius: 20px; border: 0.5px solid #ccc; background: #fff; color: #888; font-size: 13px; cursor: pointer; font-family: inherit; }
+.inv-summary { margin-top: 1rem; padding: 12px 14px; border-radius: 8px; font-size: 13px; display: none; border-left: 3px solid; line-height: 1.8; }
+.inv-summary.visible { display: block; }
+.inv-summary.need { background: #FAECE7; border-color: #D85A30; color: #993C1D; }
+.inv-summary.ok { background: #E1F5EE; border-color: #1D9E75; color: #0F6E56; }
+.inv-summary-title { font-weight: 500; margin-bottom: 6px; }
+footer { text-align: center; font-size: 12px; color: #aaa; padding: 2rem 1rem; }
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">🍵</div>
+  <div>
+    <h1>甜品店备品操作手册</h1>
+    <p>Dessert Shop Preparation Manual</p>
+  </div>
+</header>
+<div class="container">
+  <nav class="nav" id="nav"></nav>
+  <div id="content"></div>
+</div>
+<footer>甜品店内部使用 · 请勿外传</footer>
+<script>
+var SECTIONS = [
+  {
+    id: "opening", label: "开早流程", type: "steps",
+    steps: [
+      { num:1, title:"开灯", detail:null, warn:false },
+      { num:2, title:"开洗碗机", detail:"开两个按钮", warn:false },
+      { num:3, title:"洗抹布", detail:null, warn:false },
+      { num:4, title:"煮 Boba", detail:"8000 ml 水烧开 + 1500 g Boba｜一直搅到翻起，开到 2400 火｜计时 25 分钟，盖小锅焖 20 分钟", warn:false },
+      { num:5, title:"热 TBS 小半锅", detail:null, warn:false },
+      { num:6, title:"煮芋圆 & Taro Rice Ball", detail:"5000 ml 水，煮到飘起", warn:false },
+      { num:7, title:"热紫米粥、热芋头", detail:null, warn:false },
+      { num:8, title:"红豆汤", detail:"3 勺红豆酱 + 1000 ml 热水｜取 500 ml 水 + 红豆酱进搅拌机打碎｜倒锅加剩余 500 ml 水烧开｜勾芡 10 g : 30 ml", warn:false },
+      { num:9, title:"烧仙草", detail:"热水 1500 ml + 白糖 112 g + 冬瓜砖 20 g 烧开｜勾芡 8 g : 30 ml｜倒桶过滤网", warn:false },
+      { num:10, title:"杏仁汤", detail:"热水 1800 ml + 杏仁粉 175 g + 白糖 75 g 煮开｜勾芡 10 g : 70 ml｜加奶油 70 ml 烧开", warn:false },
+      { num:11, title:"煮芋圆 & 小芋圆", detail:"5000 ml 水烧开｜芋圆飘起过热水放 TBS｜小芋圆飘起过凉水放 CS", warn:false },
+      { num:12, title:"Sago（视情况）", detail:"若外面少于半盒就煮，参考 Sago 配方", warn:false },
+      { num:13, title:"⚠️ 黑糖酱（每天只煮一次）", detail:"珍珠水 1000 ml + 2 勺 Boba 600 ml + 黑糖 1 kg｜不开火先搅开｜开火调到 1200 火（火不能高否则锅会糊！）｜一直搅拌到起白烟｜加 Boba 继续搅拌到起白烟", warn:true }
+    ]
+  },
+  {
+    id: "inventory", label: "点货", type: "inventory",
+    fridges: [
+      {
+        name: "前台冰箱",
+        items: [
+          { name:"DC", std:"< 2" },
+          { name:"花豆 KB", std:"平日 < 2，周末 < 3" },
+          { name:"绿豆 MB", std:"平日 < 2，周末 < 3" },
+          { name:"红豆 RB", std:"平日 L<1 S<1，周末 L<2 S<2" },
+          { name:"花生 Peanut", std:"平日 < 2，周末 < 3" },
+          { name:"薏仁 Barley", std:"平日 < 2，周末 < 3" },
+          { name:"地瓜", std:"平日 < 2，周末 < 3" },
+          { name:"Sago", std:"开早 < 0.5，早班 < 1" },
+          { name:"CMJ", std:"< 0.5" },
+          { name:"TM", std:"< 0.5" },
+          { name:"椰奶", std:"< 1.5，补到 1.5 以上" },
+          { name:"Matcha", std:"< 0.5" },
+          { name:"Sesame", std:"< 0.5" }
+        ]
+      },
+      {
+        name: "中间冰箱",
+        items: [
+          { name:"EWS", std:"< 0.5（一份偏少）" },
+          { name:"WS", std:"< 0.5" },
+          { name:"WC 奶霜", std:"< 0，需补" },
+          { name:"MTJ", std:"< 0，需补" },
+          { name:"SJ", std:"< 0，需补" },
+          { name:"BSS", std:"< 0，需补" },
+          { name:"CM", std:"空 + 1" },
+          { name:"TB", std:"空 + 1" },
+          { name:"PPP", std:"空 + 1" },
+          { name:"Mango", std:"空 + 1" },
+          { name:"Strawberry", std:"空 + 1" },
+          { name:"PS", std:"< 0，需补" },
+          { name:"Avocado", std:"< 0，需补" },
+          { name:"MT 奶茶", std:"补到 1.5 以上（可能为负）" },
+          { name:"GT 绿茶", std:"< 1（有可能多）" },
+          { name:"GMT 绿奶茶", std:"< 1" },
+          { name:"BT 红茶", std:"< 0，需补" },
+          { name:"TTS", std:"< 0，周末补到刻度线" },
+          { name:"RBS 红豆酱", std:"< 刻度线，开早备" },
+          { name:"PRS 紫米粥", std:"开早后 > 1" },
+          { name:"HT 仙草干茶", std:"< 0，需补" },
+          { name:"WMT 冬瓜茶", std:"< 0.5" },
+          { name:"TBS", std:"< 刻度线，开早后补" },
+          { name:"CS", std:"< 刻度线，开早后补" }
+        ]
+      },
+      {
+        name: "后面冰箱",
+        items: [
+          { name:"焦糖布丁", std:"< 2盘，当天 < 0 需补" },
+          { name:"杏仁布丁", std:"< 0，需补" },
+          { name:"WS", std:"< 0.1" },
+          { name:"Taro 芋头", std:"< 0，需补" },
+          { name:"PSP 紫薯", std:"< 2/3" },
+          { name:"GJ 仙草冻", std:"周中 < 2，周末 < 3" },
+          { name:"OT 乌龙茶", std:"< 0.3，补到刻度线" }
+        ]
+      }
+    ]
+  },
+  {
+    id: "tea", label: "茶饮",
+    items: [
+      { name:"红茶", sub:"Black Tea / BT", badge:"3天", rows:[["热水","4000 ml（100°C）"],["茶叶","130 g"],["泡茶","10 分钟"],["过滤","加滤布 + 滤网"],["成品","导入加有 2000 g 冰的豆花桶"],["数量","一般做 1 份"]] },
+      { name:"绿茶", sub:"Green Tea / GT", badge:"3天", rows:[["热水","4000 ml（75°C）"],["茶叶","100 g"],["泡茶","7 分钟"],["过滤","加滤布 + 滤网"],["成品","导入加有 2000 g 冰的豆花桶"],["数量","一般做 2 份"]] },
+      { name:"奶茶", sub:"Milk Tea / MT", badge:"3天", rows:[["热水","4000 ml（100°C）"],["茶叶","130 g"],["泡茶","10 分钟"],["过滤","加滤布 + 滤网"],["成品","豆花桶内先加 450 g 奶粉，再加 600 g 冰"],["数量","一般做 2 份"]] },
+      { name:"奶绿", sub:"Milk Green Tea", badge:"3天", rows:[["热水","4000 ml（75°C）"],["茶叶","100 g"],["泡茶","7 分钟"],["过滤","加滤布 + 滤网"],["成品","豆花桶内先加 450 g 奶粉，再加 600 g 冰"]] },
+      { name:"乌龙茶", sub:"Oolong Tea / OT", badge:"3天", rows:[["热水","4000 ml"],["茶叶","100 g"],["煮法","2400 火煮开，5 分钟后关火，焖 10 分钟"],["过滤","加滤布 + 滤网"],["成品","导入加有 2000 g 冰的豆花桶"]] },
+      { name:"仙草干茶", sub:"Herbal Grass Tea / HT", badge:"3天", rows:[["材料","热水 500 ml + 仙草汁 500 ml + 冬瓜砖 25 g + 红糖 112 g + 白糖 112 g"],["做法","熬化所有糖及冬瓜砖"],["成品","导入加有 830 g 冰 + 333 ml 凉水的豆花桶"]] }
+    ],
+    note: "⚠️ 所有茶导入豆花桶前必须加滤布及滤网过滤。"
+  },
+  {
+    id: "syrup", label: "糖水",
+    items: [
+      { name:"芋圆糖水", sub:"TBS", badge:"2天", rows:[["热水","3500 ml"],["糖","二砂糖 500 g + 白糖 500 g"],["做法","混合煮沸"]] },
+      { name:"冰糖水", sub:"CS", badge:"2天", rows:[["炼糖","10 勺（约 2500 ml）"],["水","8000 ml"],["做法","混合均匀"]] }
+    ]
+  },
+  {
+    id: "dessert", label: "甜品",
+    items: [
+      { name:"紫米粥", sub:"PRS", badge:"2天", rows:[["材料","糯米 500 g + 黑米 400 g + 红豆 300 g + 热水 13000 ml"],["煮法","大火压力锅，上汽转 800，30 分钟，关火泄气"],["调味","二砂糖 450 g + 白糖 450 g"],["存放","放入 2 凉 2 热方形盘"]] },
+      { name:"烧仙草", sub:"Burned Grass Jelly", badge:"2天", rows:[["材料","仙草汁 380 ml + 热水 1500 ml + 白糖 112 g + 冬瓜砖 20 g"],["勾芡","8 g : 30 ml"],["做法","煮融化后勾芡，倒桶时加滤网"]] },
+      { name:"仙草冻", sub:"Grass Jelly / GJ", badge:"5天", rows:[["材料","仙草汁 3000 ml（1 罐）+ 热水 10000 ml + 白糖 900 g + 二砂糖 300 g"],["勾芡","150 g : 1000 ml"],["做法","先化糖，加仙草汁煮开转 1200 中火，勾芡后每 10 min 搅拌，每分钟换方向，关火再搅拌 1 分钟"],["出品","倒桶时加滤网"]] },
+      { name:"红豆酱", sub:"RBS", badge:"2天", rows:[["材料","红豆 2000 g + 糯米 200 g + 热水 8000 ml"],["煮法","高压锅，上汽转 800，6 分钟，关火泄气"],["调味","二砂糖 600 g + 白糖 600 g"]] },
+      { name:"红豆汤", sub:"Red Bean Soup", badge:"2天", rows:[["材料","红豆酱 3 勺 + 热水 1000 ml"],["做法","取 500 ml 水 + 红豆酱搅拌机打碎，倒锅加剩余 500 ml 水烧开"],["勾芡","10 g : 30 ml"]] },
+      { name:"焦糖布丁", sub:"Caramel Pudding", badge:"当天", rows:[["材料","布丁粉 630 g + 焦糖粉 190 g"],["布丁液","5000 ml 水 + 布丁粉煮开，过滤进量杯"],["焦糖液","375 ml 水 + 焦糖粉，方形容器煮开"],["组合","布丁液入布丁杯，加 0.5 勺焦糖液"]] },
+      { name:"椰奶", sub:"Coconut Milk", badge:"2天", rows:[["材料","椰浆 1000 ml + 椰子粉 125 g + 白糖 75 g + 牛奶 275 ml + 水 1250 ml"],["做法","混合煮开"]] },
+      { name:"杏仁汤", sub:"Almond Soup", badge:"2天", rows:[["材料","热水 1800 ml + 杏仁粉 175 g + 白糖 75 g + 奶油 70 ml"],["勾芡","10 g : 70 ml"],["做法","混合煮开后勾芡"]] },
+      { name:"牛油果酱", sub:"Avocado Paste", badge:"及时", badgeClass:"badge-red", rows:[["材料","牛油果 3 个 + 炼乳（CM）150 ml + 鲜奶油 50 ml + 冷水 50 ml"],["做法","混合搅拌均匀"]] },
+      { name:"冬瓜茶", sub:"Winter Melon Tea / WMT", badge:"2天", rows:[["材料","水 7500 ml + 冬瓜砖 3 块"],["做法","水开后小火煮 5 分钟，加入冰块 5000 g"]] },
+      { name:"紫薯泥", sub:"Purple Yam Paste", badge:"2天", rows:[["材料","紫薯块 750 g + 紫薯粉 40 g + 炼乳（CM）90 ml + 奶油 120 ml + 牛奶 400-450 ml"],["做法","搅拌机打匀后倒入方盒"]] },
+      { name:"芋泥", sub:"Taro Paste", badge:"2天", rows:[["配方（1份）","芋头 10 块 + 炼乳（CM）20 ml + 牛奶 20 ml + 奶油 40 ml + 糖水适量"],["备注","一桶 = 4 份"],["做法","搅拌均匀"]] }
+    ]
+  },
+  {
+    id: "topping", label: "配料",
+    items: [
+      { name:"芋圆", sub:"Taro Ball", badge:"及时", badgeClass:"badge-red", rows:[["热水","5000 ml，大火煮至膨胀飘起"],["过水","过热水"],["存放","放入 TBS"]] },
+      { name:"小芋圆", sub:"Mini Taro", badge:"及时", badgeClass:"badge-red", rows:[["热水","5000 ml，大火煮至膨胀飘起"],["过水","过冷水"],["存放","放入 CS"]] },
+      { name:"珍珠", sub:"Tapioca Pearl", badge:"及时", badgeClass:"badge-red", rows:[["热水","8000 ml，滚开后煮 25 分钟，焖 20 分钟，冲冷水"],["存放","白糖:二砂:珍珠 = 1:1:10，热水化开糖"]] },
+      { name:"白汤圆", sub:"White Glutinous", badge:"及时", badgeClass:"badge-red", rows:[["热水","5000 ml，煮至飘起"],["存放","放入 TBS"]] },
+      { name:"西米露", sub:"Sago", badge:"及时", badgeClass:"badge-red", rows:[["材料","水 5000 ml + 西米 2 cup"],["做法","水滚开煮 15 分钟，焖 15 分钟，过冷水"],["存放","导入 WS"]] }
+    ],
+    note: "⚠️ 以上配料均即做即用，不可久放。"
+  },
+  {
+    id: "cream", label: "奶霜",
+    items: [
+      { name:"奶霜", sub:"Milk Foam / WC", badge:"5天", badgeClass:"badge-blue", rows:[["材料","鲜奶油 500 ml + 鲜奶 500 ml + 奶盖粉 250 g"],["做法","先将鲜奶油打发，再将鲜奶与奶盖粉缓慢加入，继续搅拌打发"]] }
+    ]
+  },
+  {
+    id: "root", label: "根茎",
+    items: [
+      { name:"芋头", sub:"Taro Chunks", badge:"2天", rows:[["用量","2 KG"],["材料","白糖 400 g + 盐 1 g + 热水 2000 ml"],["煮法","2400 火煮沸 5 min → 蒸锅 10 min → 保温 15 min"],["判断","能戳透即可"],["存放","翻锅放入蒸锅出餐"]] },
+      { name:"地瓜", sub:"Sweet Potato", badge:"2天", rows:[["用量","2.5 KG"],["预处理","削皮，泡入 2500 ml 水 + 柠檬汁 10 ml"],["煮法","热水 2500 ml + 白糖 800 g 煮沸，加地瓜 + 柠檬汁 10 ml，煮沸 5 min"],["后续","蒸锅 15 min → 保温 15 min"]] },
+      { name:"紫薯", sub:"Purple Sweet Potato / PSP", badge:"2天", rows:[["材料","热水 1500 ml + 白糖 800 g + 柠檬汁 10 ml + 冻 PSP 2000 g"],["煮法","2400 煮开 5 min → 蒸锅 15 min → 保温 15 min"]] }
+    ]
+  },
+  {
+    id: "bean", label: "豆类",
+    items: [
+      { name:"花豆", sub:"KB", badge:"3天", rows:[["泡发","3000 ml 水 + 盐 10 g，泡 1 小时"],["袋子","扎紧"],["压力锅","8000 ml 热水，上汽转 800，15 分钟"],["糖水","热水 2000 ml + 二砂 500 g + 白糖 500 g 煮沸"],["存放","2 凉 2 热方形容器"]] },
+      { name:"绿豆", sub:"MB", badge:"3天", rows:[["泡发","3000 ml 水 + 盐 10 g，泡 1 小时"],["袋子","不紧扎"],["压力锅","8000 ml 热水，上汽转 800，3 分钟"],["糖水","热水 2000 ml + 二砂 500 g + 白糖 500 g 煮沸"],["存放","2 凉 2 热方形容器"]] },
+      { name:"红豆", sub:"RB", badge:"3天", rows:[["泡发","3000 ml 水 + 盐 10 g，泡 1 小时"],["袋子","不紧扎"],["压力锅","8000 ml 热水，上汽转 800，4 分钟"],["糖水","热水 2000 ml + 二砂 500 g + 白糖 500 g 煮沸"],["存放","2 凉 2 热方形容器"]] },
+      { name:"花生", sub:"Peanut", badge:"3天", rows:[["泡发","3000 ml 水 + 盐 60 g，泡 1 小时"],["袋子","不紧扎"],["压力锅","8000 ml 热水，上汽转 800，25 分钟，过热水"],["糖水","热水 2500 ml + 白糖 1000 g 煮沸"],["存放","2 凉 2 热方形容器"]] },
+      { name:"薏仁", sub:"Barley", badge:"3天", rows:[["泡发","无需泡发，清洗后直接入袋"],["袋子","扎紧"],["压力锅","8000 ml 热水，上汽转 800，1 分钟，过凉水"],["糖水","热水 4500 ml + 白糖 1500 g 煮沸"],["存放","2 凉 2 热方形容器"]] }
+    ],
+    note: "以上配方均为 1 KG 配方。"
+  }
+];
+
+var nav = document.getElementById('nav');
+var content = document.getElementById('content');
+
+SECTIONS.forEach(function(sec) {
+  var btn = document.createElement('button');
+  btn.className = 'nav-btn';
+  btn.textContent = sec.label;
+  btn.addEventListener('click', function() {
+    document.querySelectorAll('.nav-btn').forEach(function(b) { b.classList.remove('active'); });
+    document.querySelectorAll('.section').forEach(function(s) { s.classList.remove('active'); });
+    btn.classList.add('active');
+    document.getElementById('sec-' + sec.id).classList.add('active');
+  });
+  nav.appendChild(btn);
+
+  var div = document.createElement('div');
+  div.className = 'section';
+  div.id = 'sec-' + sec.id;
+
+  var titleEl = document.createElement('div');
+  titleEl.className = 'section-title';
+  titleEl.textContent = sec.label;
+  div.appendChild(titleEl);
+
+  if (sec.type === 'steps') { renderSteps(div, sec); }
+  else if (sec.type === 'inventory') { renderInventory(div, sec); }
+  else { renderCards(div, sec); }
+
+  content.appendChild(div);
+});
+
+function renderSteps(div, sec) {
+  var prog = document.createElement('div');
+  prog.className = 'progress-text';
+  prog.id = 'prog-' + sec.id;
+  prog.textContent = '0 / ' + sec.steps.length + ' 完成';
+  div.appendChild(prog);
+
+  var list = document.createElement('div');
+  list.className = 'step-list';
+
+  sec.steps.forEach(function(step) {
+    var item = document.createElement('div');
+    item.className = 'step-item' + (step.warn ? ' warn' : '');
+
+    var detailHtml = '';
+    if (step.detail) {
+      detailHtml = step.detail.split('｜').map(function(p) {
+        return step.warn ? p.replace('火不能高否则锅会糊！', '<span class="warn-text">火不能高否则锅会糊！</span>') : p;
+      }).join('<br>');
+    }
+
+    var rowDiv = document.createElement('div');
+    rowDiv.className = 'step-row';
+    rowDiv.innerHTML =
+      '<button class="check-btn">✓</button>' +
+      '<div class="step-num">' + step.num + '</div>' +
+      '<div class="step-title">' + step.title + '</div>' +
+      (step.detail ? '<span class="step-chevron">▼</span>' : '');
+    item.appendChild(rowDiv);
+
+    if (step.detail) {
+      var detailDiv = document.createElement('div');
+      detailDiv.className = 'step-detail';
+      detailDiv.innerHTML = detailHtml;
+      item.appendChild(detailDiv);
+    }
+
+    var checkBtn = rowDiv.querySelector('.check-btn');
+    checkBtn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      item.classList.toggle('done');
+      var done = div.querySelectorAll('.step-item.done').length;
+      document.getElementById('prog-' + sec.id).textContent = done + ' / ' + sec.steps.length + ' 完成';
+    });
+
+    if (step.detail) {
+      rowDiv.addEventListener('click', function(e) {
+        if (e.target === checkBtn || checkBtn.contains(e.target)) return;
+        item.classList.toggle('open');
+      });
+    }
+
+    list.appendChild(item);
+  });
+
+  div.appendChild(list);
+
+  var resetBtn = document.createElement('button');
+  resetBtn.className = 'reset-btn';
+  resetBtn.textContent = '重置所有勾选';
+  resetBtn.addEventListener('click', function() {
+    div.querySelectorAll('.step-item').forEach(function(i) { i.classList.remove('done', 'open'); });
+    document.getElementById('prog-' + sec.id).textContent = '0 / ' + sec.steps.length + ' 完成';
+  });
+  div.appendChild(resetBtn);
+}
+
+function renderInventory(div, sec) {
+  var totalItems = sec.fridges.reduce(function(s, f) { return s + f.items.length; }, 0);
+
+  var prog = document.createElement('div');
+  prog.className = 'progress-text';
+  prog.id = 'inv-prog';
+  prog.textContent = '需补货 0 / ' + totalItems + ' 项';
+  div.appendChild(prog);
+
+  sec.fridges.forEach(function(fridge) {
+    var block = document.createElement('div');
+    block.className = 'fridge-block';
+    block.id = 'fblock-' + fridge.name;
+
+    var ftitle = document.createElement('div');
+    ftitle.className = 'fridge-title';
+    ftitle.innerHTML = '<span>' + fridge.name + '</span><span class="fridge-count" id="fc-' + fridge.name + '">0/' + fridge.items.length + '</span>';
+    block.appendChild(ftitle);
+
+    fridge.items.forEach(function(item) {
+      var row = document.createElement('div');
+      row.className = 'inv-item';
+      row.innerHTML = '<div class="inv-check">✓</div><div class="inv-name">' + item.name + '</div><div class="inv-std">' + item.std + '</div>';
+      row.addEventListener('click', function() {
+        row.classList.toggle('checked');
+        var secEl = document.getElementById('sec-inventory');
+        var checked = secEl.querySelectorAll('.inv-item.checked').length;
+        document.getElementById('inv-prog').textContent = '需补货 ' + checked + ' / ' + totalItems + ' 项';
+        var fridgeChecked = block.querySelectorAll('.inv-item.checked').length;
+        document.getElementById('fc-' + fridge.name).textContent = fridgeChecked + '/' + fridge.items.length;
+      });
+      block.appendChild(row);
+    });
+
+    div.appendChild(block);
+  });
+
+  var summary = document.createElement('div');
+  summary.className = 'inv-summary';
+  summary.id = 'inv-summary';
+  div.appendChild(summary);
+
+  var btnRow = document.createElement('div');
+  btnRow.className = 'btn-row';
+
+  var doneBtn = document.createElement('button');
+  doneBtn.className = 'inv-done-btn';
+  doneBtn.textContent = '查看今日备货清单';
+  doneBtn.addEventListener('click', function() {
+    var secEl = document.getElementById('sec-inventory');
+    var checked = secEl.querySelectorAll('.inv-item.checked .inv-name');
+    if (checked.length === 0) {
+      summary.className = 'inv-summary visible ok';
+      summary.innerHTML = '<div class="inv-summary-title">今日无需备货！</div>所有品项库存充足。';
+    } else {
+      var names = Array.from(checked).map(function(n) { return '• ' + n.textContent; }).join('<br>');
+      summary.className = 'inv-summary visible need';
+      summary.innerHTML = '<div class="inv-summary-title">今日需备货（' + checked.length + ' 项）：</div>' + names;
+    }
+  });
+
+  var resetBtn = document.createElement('button');
+  resetBtn.className = 'inv-reset-btn';
+  resetBtn.textContent = '重置';
+  resetBtn.addEventListener('click', function() {
+    div.querySelectorAll('.inv-item').forEach(function(i) { i.classList.remove('checked'); });
+    summary.className = 'inv-summary';
+    summary.innerHTML = '';
+    document.getElementById('inv-prog').textContent = '需补货 0 / ' + totalItems + ' 项';
+    sec.fridges.forEach(function(f) {
+      var fc = document.getElementById('fc-' + f.name);
+      if (fc) fc.textContent = '0/' + f.items.length;
+    });
+  });
+
+  btnRow.appendChild(doneBtn);
+  btnRow.appendChild(resetBtn);
+  div.appendChild(btnRow);
+}
+
+function renderCards(div, sec) {
+  var grid = document.createElement('div');
+  grid.className = 'item-grid';
+
+  sec.items.forEach(function(item) {
+    var card = document.createElement('div');
+    card.className = 'item-card';
+    var badgeClass = item.badgeClass || '';
+    var rowsHtml = item.rows.map(function(r) { return '<tr><td>' + r[0] + '</td><td>' + r[1] + '</td></tr>'; }).join('');
+    card.innerHTML =
+      '<div class="card-header">' +
+        '<div><div class="card-name">' + item.name + '</div><div class="card-sub">' + item.sub + '</div></div>' +
+        '<div style="display:flex;align-items:center;gap:6px;">' +
+          '<span class="card-badge ' + badgeClass + '">保质 ' + item.badge + '</span>' +
+          '<span class="card-chevron">▼</span>' +
+        '</div>' +
+      '</div>' +
+      '<div class="card-body"><table class="info">' + rowsHtml + '</table></div>';
+    card.querySelector('.card-header').addEventListener('click', function() { card.classList.toggle('expanded'); });
+    grid.appendChild(card);
+  });
+
+  div.appendChild(grid);
+
+  if (sec.note) {
+    var note = document.createElement('div');
+    note.className = 'note';
+    note.textContent = sec.note;
+    div.appendChild(note);
+  }
+}
+
+nav.children[0].click();
+</script>
+</body>
+</html>
