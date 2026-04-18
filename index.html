@@ -104,13 +104,13 @@ var SECTIONS = [
       { num:4, title:"煮 Boba", detail:"8000 ml 水烧开 + 1500 g Boba｜一直搅到翻起，开到 2400 火｜计时 25 分钟，盖小锅焖 20 分钟", warn:false },
       { num:5, title:"热 TBS 小半锅", detail:null, warn:false },
       { num:6, title:"煮 Rice Ball & Taro Rice Ball", detail:"5000 ml 水，煮到飘起", warn:false },
-      { num:7, title:"热紫米粥、热芋头", detail:null, warn:false },
-      { num:8, title:"红豆汤", detail:"3 勺红豆酱 + 1000 ml 热水｜取 500 ml 水 + 红豆酱进搅拌机打碎｜倒锅加剩余 500 ml 水烧开｜勾芡 10 g : 30 ml", warn:false },
-      { num:9, title:"烧仙草", detail:"热水 1500 ml + 白糖 112 g + 冬瓜砖 20 g 烧开｜勾芡 8 g : 30 ml｜倒桶过滤网", warn:false },
-      { num:10, title:"杏仁汤", detail:"热水 1800 ml + 杏仁粉 175 g + 白糖 75 g 煮开｜勾芡 10 g : 70 ml｜加奶油 70 ml 烧开", warn:false },
+      { num:7, title:"热紫米粥、热芋头", detail:"热紫米粥放入高过小勺的量（小勺锅），开了就好｜芋头加热放到前台蒸锅，至少半盆以上", warn:false },
+      { num:8, title:"红豆汤", detail:"3 勺红豆酱 + 1000 ml 热水｜取 500 ml 水 + 红豆酱进搅拌机打碎｜倒锅加剩余 500 ml 水烧开｜勾芡 10 g : 30 ml｜放大勺的锅", warn:false },
+      { num:9, title:"烧仙草", detail:"热水 1500 ml + 白糖 112 g + 冬瓜砖 20 g 烧开｜勾芡 8 g : 30 ml｜放大勺的锅", warn:false },
+      { num:10, title:"杏仁汤", detail:"热水 1800 ml + 杏仁粉 175 g + 白糖 75 g 煮开｜勾芡 10 g : 70 ml｜加奶油 70 ml 烧开｜放小勺的锅", warn:false },
       { num:11, title:"煮芋圆 & 小芋圆", detail:"5000 ml 水烧开｜芋圆飘起过热水放 TBS｜小芋圆飘起过凉水放 CS", warn:false },
       { num:12, title:"Sago（视情况）", detail:"若外面少于半盒就煮，参考 Sago 配方", warn:false },
-      { num:13, title:"⚠️ 黑糖酱（每天只煮一次）", detail:"珍珠水 1000 ml + 2 勺 Boba 600 ml + 黑糖 1 kg｜不开火先搅开｜开火调到 1200 火（火不能高否则锅会糊！）｜一直搅拌到起白烟｜加 Boba 继续搅拌到起白烟", warn:true }
+      { num:13, title:"⚠️ 黑糖酱（每天只煮一次）", detail:"珍珠水 1000 ml + 2 勺 Boba 600 ml + 黑糖 1 kg｜不开火先搅开｜开火调到 1200 火（火不能高否则锅会糊！）｜一直搅拌到起白烟｜加 Boba 继续搅拌到起白烟｜做完后锅内剩余珍珠加白糖 120 g + 二砂糖 120 g + 热水化开保存", warn:true }
     ]
   },
   {
@@ -119,7 +119,7 @@ var SECTIONS = [
       {
         name: "前台冰箱",
         items: [
-          { name:"DC", std:"< 2" },
+          { name:"DC 咖啡粉", std:"< 2" },
           { name:"花豆 KB", std:"平日 < 2，周末 < 3" },
           { name:"绿豆 MB", std:"平日 < 2，周末 < 3" },
           { name:"红豆 RB", std:"平日 L<1 S<1，周末 L<2 S<2" },
@@ -142,9 +142,9 @@ var SECTIONS = [
           { name:"WC 奶霜", std:"< 0，需补" },
           { name:"MTJ 奶茶冻", std:"< 0，需补" },
           { name:"SJ 草莓酱", std:"< 0，需补" },
-          { name:"BSS", std:"< 0，需补" },
-          { name:"CM", std:"空 + 1" },
-          { name:"TB", std:"空 + 1" },
+          { name:"BSS 黑糖酱", std:"< 0，需补" },
+          { name:"CM 炼奶", std:"空 + 1" },
+          { name:"TP 紫薯泥", std:"空 + 1" },
           { name:"PPP 紫薯泥", std:"空 + 1" },
           { name:"Mango", std:"空 + 1" },
           { name:"Strawberry", std:"空 + 1" },
@@ -154,7 +154,7 @@ var SECTIONS = [
           { name:"GT 绿茶", std:"< 1（有可能多）" },
           { name:"GMT 绿奶茶", std:"< 1" },
           { name:"BT 红茶", std:"< 0，需补" },
-          { name:"TTS", std:"< 0，周末补到刻度线" },
+          { name:"TTS 泰奶", std:"< 0，周末补到刻度线" },
           { name:"RBS 红豆酱", std:"< 刻度线，开早备" },
           { name:"PRS 紫米粥", std:"开早后 > 1" },
           { name:"HT 仙草干茶", std:"< 0，需补" },
@@ -201,34 +201,35 @@ var SECTIONS = [
     id: "dessert", label: "甜品",
     items: [
       { name:"紫米粥", sub:"PRS", badge:"2天", rows:[["材料","糯米 500 g + 黑米 400 g + 红豆 300 g + 热水 13000 ml"],["煮法","大火压力锅，上汽转 800，30 分钟，关火泄气"],["调味","二砂糖 450 g + 白糖 450 g"],["存放","放入 2 凉 2 热方形盘"]] },
-      { name:"烧仙草", sub:"Burned Grass Jelly", badge:"2天", rows:[["材料","仙草汁 380 ml + 热水 1500 ml + 白糖 112 g + 冬瓜砖 20 g"],["勾芡","8 g : 30 ml"],["做法","煮融化后勾芡，倒桶时加滤网"]] },
+      { name:"烧仙草", sub:"Burned Grass Jelly", badge:"2天", rows:[["材料","仙草汁 380 ml + 热水 1500 ml + 白糖 112 g + 冬瓜砖 20 g"],["勾芡","8 g : 30 ml"],["做法","煮融化后勾芡"]] },
       { name:"仙草冻", sub:"Grass Jelly / GJ", badge:"5天", rows:[["材料","仙草汁 3000 ml（1 罐）+ 热水 10000 ml + 白糖 900 g + 二砂糖 300 g"],["勾芡","150 g : 1000 ml"],["做法","先化糖，加仙草汁煮开转 1200 中火，勾芡后每 10 min 搅拌，每分钟换方向，关火再搅拌 1 分钟"],["出品","倒桶时加滤网"]] },
       { name:"红豆酱", sub:"RBS", badge:"2天", rows:[["材料","红豆 2000 g + 糯米 200 g + 热水 8000 ml"],["煮法","高压锅，上汽转 800，6 分钟，关火泄气"],["调味","二砂糖 600 g + 白糖 600 g"]] },
       { name:"红豆汤", sub:"Red Bean Soup", badge:"2天", rows:[["材料","红豆酱 3 勺 + 热水 1000 ml"],["做法","取 500 ml 水 + 红豆酱搅拌机打碎，倒锅加剩余 500 ml 水烧开"],["勾芡","10 g : 30 ml"]] },
       { name:"焦糖布丁", sub:"Caramel Pudding", badge:"当天", rows:[["材料","布丁粉 630 g + 焦糖粉 190 g"],["布丁液","5000 ml 水 + 布丁粉煮开，过滤进量杯"],["焦糖液","375 ml 水 + 焦糖粉，方形容器煮开"],["组合","布丁液入布丁杯，加 0.5 勺焦糖液"]] },
-      { name:"椰奶", sub:"Coconut Milk", badge:"2天", rows:[["材料","椰浆 1000 ml + 椰子粉 125 g + 白糖 75 g + 牛奶 275 ml + 水 1250 ml"],["做法","混合煮开"]] },
+      { name:"椰奶", sub:"Coconut Milk", badge:"3天", rows:[["材料","椰浆 1000 ml + 椰子粉 125 g + 白糖 75 g + 牛奶 275 ml + 水 1250 ml"],["做法","混合煮开"]] },
       { name:"杏仁汤", sub:"Almond Soup", badge:"2天", rows:[["材料","热水 1800 ml + 杏仁粉 175 g + 白糖 75 g + 奶油 70 ml"],["勾芡","10 g : 70 ml"],["做法","混合煮开后勾芡"]] },
-      { name:"牛油果酱", sub:"Avocado Paste", badge:"及时", badgeClass:"badge-red", rows:[["材料","牛油果 3 个 + 炼乳（CM）150 ml + 鲜奶油 50 ml + 冷水 50 ml"],["做法","混合搅拌均匀"]] },
-      { name:"冬瓜茶", sub:"Winter Melon Tea / WMT", badge:"2天", rows:[["材料","水 7500 ml + 冬瓜砖 3 块"],["做法","水开后小火煮 5 分钟，加入冰块 5000 g"]] },
-      { name:"紫薯泥", sub:"Purple Yam Paste", badge:"2天", rows:[["材料","紫薯块 750 g + 紫薯粉 40 g + 炼乳（CM）90 ml + 奶油 120 ml + 牛奶 400-450 ml"],["做法","搅拌机打匀后倒入方盒"]] },
-      { name:"芋泥", sub:"Taro Paste", badge:"2天", rows:[["配方（1份）","芋头 10 块 + 炼乳（CM）20 ml + 牛奶 20 ml + 奶油 40 ml + 糖水适量"],["备注","一桶 = 4 份"],["做法","搅拌均匀"]] }
+      { name:"牛油果酱", sub:"Avocado Paste", badge:"3天", rows:[["材料","牛油果 3 个 + 炼乳（CM）150 ml + 鲜奶油 50 ml + 冷水 50 ml"],["做法","混合搅拌均匀"]] },
+      { name:"冬瓜茶", sub:"Winter Melon Tea / WMT", badge:"3天", rows:[["材料","水 7500 ml + 冬瓜砖 3 块"],["做法","水开后小火煮 5 分钟，加入冰块 5000 g"]] },
+      { name:"紫薯泥", sub:"Purple Yam Paste / PPP", badge:"3天", rows:[["材料","紫薯块 750 g + 紫薯粉 40 g + 炼乳（CM）90 ml + 奶油 120 ml + 牛奶 400-450 ml"],["做法","搅拌机打匀后倒入方盒"]] },
+      { name:"芋泥", sub:"Taro Paste / TP", badge:"3天", rows:[["配方（1份）","芋头 10 块 + 炼乳（CM）20 ml + 牛奶 20 ml + 奶油 40 ml + 糖水适量"],["备注","一桶 = 4 份"],["做法","搅拌均匀"]] }
     ]
   },
   {
     id: "topping", label: "配料",
     items: [
-      { name:"芋圆", sub:"Taro Ball", badge:"及时", badgeClass:"badge-red", rows:[["热水","5000 ml，大火煮至膨胀飘起"],["过水","过热水"],["存放","放入 TBS"]] },
-      { name:"小芋圆", sub:"Mini Taro", badge:"及时", badgeClass:"badge-red", rows:[["热水","5000 ml，大火煮至膨胀飘起"],["过水","过冷水"],["存放","放入 CS"]] },
-      { name:"珍珠", sub:"Tapioca Pearl", badge:"及时", badgeClass:"badge-red", rows:[["热水","8000 ml，滚开后煮 25 分钟，焖 20 分钟，冲冷水"],["存放","白糖:二砂:珍珠 = 1:1:10，热水化开糖"]] },
-      { name:"白汤圆", sub:"White Glutinous", badge:"及时", badgeClass:"badge-red", rows:[["热水","5000 ml，煮至飘起"],["存放","放入 TBS"]] },
-      { name:"西米露", sub:"Sago", badge:"及时", badgeClass:"badge-red", rows:[["材料","水 5000 ml + 西米 2 cup"],["做法","水滚开煮 15 分钟，焖 15 分钟，过冷水"],["存放","导入白蜜糖（WS）"]] }
+      { name:"芋圆", sub:"Taro Ball", badge:"4小时", badgeClass:"badge-red", rows:[["热水","5000 ml，大火煮至膨胀飘起"],["过水","过热水"],["存放","放入 TBS"]] },
+      { name:"小芋圆", sub:"Mini Taro", badge:"4小时", badgeClass:"badge-red", rows:[["热水","5000 ml，大火煮至膨胀飘起"],["过水","过冷水"],["存放","放入 CS"]] },
+      { name:"珍珠", sub:"Boba", badge:"4小时", badgeClass:"badge-red", rows:[["热水","8000 ml，滚开后煮 25 分钟，焖 20 分钟，冲冷水"],["存放","白糖:二砂:珍珠 = 1:1:10，热水化开糖"]] },
+      { name:"白汤圆", sub:"White Glutinous", badge:"4小时", badgeClass:"badge-red", rows:[["热水","5000 ml，煮至飘起"],["存放","放入 TBS"]] },
+      { name:"西米露", sub:"Sago", badge:"4小时", badgeClass:"badge-red", rows:[["材料","水 5000 ml + 西米 2 cup"],["做法","水滚开煮 15 分钟，焖 15 分钟，过冷水"],["存放","导入白蜜糖（WS）"]] }
     ],
     note: "⚠️ 以上配料均即做即用，不可久放。"
   },
   {
     id: "cream", label: "奶霜",
     items: [
-      { name:"奶霜", sub:"Milk Foam / WC", badge:"5天", badgeClass:"badge-blue", rows:[["材料","鲜奶油 500 ml + 鲜奶 500 ml + 奶盖粉 250 g"],["做法","先将鲜奶油打发，再将鲜奶与奶盖粉缓慢加入，继续搅拌打发"]] }
+      { name:"奶霜", sub:"Milk Foam / WC", badge:"5天", badgeClass:"badge-blue", rows:[["材料","鲜奶油 500 ml + 鲜奶 500 ml + 奶盖粉 250 g"],["做法","先将鲜奶油打发，再将鲜奶与奶盖粉缓慢加入，继续搅拌打发"]] },
+      { name:"咖啡粉", sub:"DC", badge:"3天", rows:[["材料","白糖 235 g + 热水 300 ml + 咖啡粉 60 g"],["做法","用打奶霜的机器打发"],["存放","装入两个透明小方盒"]] }
     ]
   },
   {
@@ -236,7 +237,7 @@ var SECTIONS = [
     items: [
       { name:"芋头", sub:"Taro Chunks", badge:"2天", rows:[["用量","2 KG"],["材料","白糖 400 g + 盐 1 g + 热水 2000 ml"],["煮法","2400 火煮沸 5 min → 蒸锅 10 min → 保温 15 min"],["判断","能戳透即可"],["存放","翻锅放入蒸锅出餐"]] },
       { name:"地瓜", sub:"Sweet Potato", badge:"2天", rows:[["用量","2.5 KG"],["预处理","削皮，泡入 2500 ml 水 + 柠檬汁 10 ml"],["煮法","热水 2500 ml + 白糖 800 g 煮沸，加地瓜 + 柠檬汁 10 ml，煮沸 5 min"],["后续","蒸锅 15 min → 保温 15 min"]] },
-      { name:"紫薯", sub:"Purple Sweet Potato / PSP", badge:"2天", rows:[["材料","热水 1500 ml + 白糖 800 g + 柠檬汁 10 ml + 冻 PSP 2000 g"],["煮法","2400 煮开 5 min → 蒸锅 15 min → 保温 15 min"]] }
+      { name:"紫薯", sub:"Purple Sweet Potato / PSP", badge:"当天日期", rows:[["材料","热水 1500 ml + 白糖 800 g + 柠檬汁 10 ml + 冻 PSP 2000 g"],["煮法","2400 煮开 5 min → 蒸锅 15 min → 保温 15 min"]] }
     ]
   },
   {
